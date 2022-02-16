@@ -1,4 +1,14 @@
+import {
+  HeaderMessage,
+  FooterMessage,
+} from '../components/Common/WelcomeMessage'
+
 function signup() {
-  return <div>signup</div>
+  return (
+    <>
+      <HeaderMessage />
+      <FooterMessage />
+    </>
+  )
 }
 export default signup
