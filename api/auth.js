@@ -7,6 +7,8 @@ const bcrypt = require('bcryptjs')
 const isEmail = require('validator/lib/isEmail')
 
 router.post('/', async (req, res) => {
+  // has req.body.user
+
   const { email, password } = req.body.user
 
   if (!isEmail(email)) return res.status(401).send('Invalid email')

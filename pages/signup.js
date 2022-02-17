@@ -9,6 +9,8 @@ import {
 import axios from 'axios'
 import baseUrl from '../utils/baseUrl'
 let cancel
+import { registerUser } from '../utils/authUser'
+import uploadPic from '../utils/uploadPicToCloudinary'
 
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/
 
@@ -53,7 +55,24 @@ function Signup() {
   const [highlighted, setHighlighted] = useState(false)
   const inputRef = useRef()
 
-  const handleSubmit = (e) => e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setFormLoading(true)
+
+    let profilePicUrl
+
+    if (media != null) {
+      profilePicUrl = await uploadPic(media)
+    }
+
+    // error uploading
+    if (media != null && !profilePicUrl) {
+      setFormLoading(false)
+      return setErrorMsg('Error Uploading Image')
+    }
+
+    await registerUser(user, profilePicUrl, setErrorMsg, setFormLoading)
+  }
 
   useEffect(() => {
     const isUser = Object.values({ name, email, password, bio }).every((item) =>
@@ -75,12 +94,15 @@ function Signup() {
         }),
       })
 
+      if (errorMsg !== null) setErrorMsg(null)
+
       if (res.data === 'Available') {
         setUsernameAvailable(true)
         setUser((prev) => ({ ...prev, username }))
       }
     } catch (error) {
       setErrorMsg('Username not available')
+      setUsernameAvailable(false)
     }
     setUsernameLoading(false)
   }

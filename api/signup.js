@@ -31,6 +31,7 @@ router.get('/:username', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+  // req.body.user, req.body.profilePicUrl
   const {
     name,
     email,
