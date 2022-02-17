@@ -8,6 +8,7 @@ import {
 } from '../components/Common/WelcomeMessage'
 import axios from 'axios'
 import baseUrl from '../utils/baseUrl'
+let cancel
 
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/
 
@@ -64,8 +65,15 @@ function Signup() {
   const checkUsername = async () => {
     setUsernameLoading(true)
     try {
+      cancel && cancel()
+      const CancelToken = axios.CancelToken
+
       // make request to backend
-      const res = await axios.get(`${baseUrl}/api/signup/${username}`)
+      const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
+        cancelToken: new CancelToken((canceler) => {
+          cancel = canceler
+        }),
+      })
 
       if (res.data === 'Available') {
         setUsernameAvailable(true)
