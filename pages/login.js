@@ -3,7 +3,7 @@ import {
   FooterMessage,
 } from '../components/Common/WelcomeMessage'
 
-function login() {
+function Login() {
   return (
     <>
       <HeaderMessage />
@@ -11,4 +11,4 @@ function login() {
     </>
   )
 }
-export default login
+export default Login
