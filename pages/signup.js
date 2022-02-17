@@ -6,6 +6,8 @@ import {
   HeaderMessage,
   FooterMessage,
 } from '../components/Common/WelcomeMessage'
+import axios from 'axios'
+import baseUrl from '../utils/baseUrl'
 
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/
 
@@ -58,6 +60,26 @@ function Signup() {
     )
     isUser ? setSubmitDisabled(false) : setSubmitDisabled(true)
   }, [user])
+
+  const checkUsername = async () => {
+    setUsernameLoading(true)
+    try {
+      // make request to backend
+      const res = await axios.get(`${baseUrl}/api/signup/${username}`)
+
+      if (res.data === 'Available') {
+        setUsernameAvailable(true)
+        setUser((prev) => ({ ...prev, username }))
+      }
+    } catch (error) {
+      setErrorMsg('Username not available')
+    }
+    setUsernameLoading(false)
+  }
+
+  useEffect(() => {
+    username === '' ? setUsernameAvailable(false) : checkUsername()
+  }, [username])
 
   return (
     <>
