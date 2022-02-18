@@ -40,6 +40,17 @@ export const loginUser = async (user, setError, setLoading) => {
   setLoading(false)
 }
 
+export const redirectUser = (ctx, location) => {
+  if (ctx.req) {
+    // user is on the server side
+    ctx.res.writeHead(302, { Location: location })
+    ctx.res.end()
+  } else {
+    // client side
+    Router.push(location)
+  }
+}
+
 const setToken = (token) => {
   cookie.set('token', token)
   Router.push('/')
