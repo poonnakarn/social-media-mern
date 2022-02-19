@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { List, Image, Search } from 'semantic-ui-react'
 import axios from 'axios'
 import cookie from 'js-cookie'
@@ -13,6 +13,10 @@ function SearchComponent() {
 
   const handleChange = async (e) => {
     const { value } = e.target
+
+    if (value.length === 0) return setText(value)
+
+    if (value.trim().length === 0) return
 
     setText(value)
     setLoading(true)
@@ -30,7 +34,10 @@ function SearchComponent() {
         }),
       })
 
-      if (res.data.length === 0) return setLoading(false)
+      if (res.data.length === 0) {
+        results.length > 0 && setResults([])
+        return setLoading(false)
+      }
 
       setResults(res.data)
     } catch (error) {
@@ -38,6 +45,10 @@ function SearchComponent() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    if (text.length === 0 && loading) setLoading(false)
+  }, [text])
 
   return (
     <Search
@@ -53,7 +64,7 @@ function SearchComponent() {
       onSearchChange={handleChange}
       minCharacters={1}
       onResultSelect={(e, data) => Router.push(`/${data.result.username}`)}
-      noResultsMessage='ไม่พบ'
+      // noResultsMessage='ไม่พบ'
     />
   )
 }
