@@ -31,9 +31,61 @@ router.post('/', authMiddleware, async (req, res) => {
 
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const posts = await PostModel.find().sort({ createdAt: -1 })
+    const posts = await PostModel.find()
+      .sort({ createdAt: -1 })
+      .populate('user')
+      .populate('comments.user')
 
     return res.json(posts)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
+// GET SINGLE POST
+router.get('/:postId', authMiddleware, async (req, res) => {
+  try {
+    const post = await PostModel.findById(req.params.postId)
+      .populate('user')
+      .populate('comments.user')
+
+    if (!post) return res.status(404).send('Post not found')
+
+    return res.json(post)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
+// DELETE POST
+router.delete('/:postId', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req
+
+    const { postId } = req.params
+
+    const post = await PostModel.findById(postId)
+    if (!post) {
+      return res.status(404).send('Post not found')
+    }
+
+    const user = await UserModel.findById(userId)
+
+    // not author of the post
+    if (post.user.toString() !== userId) {
+      if (user.role === 'root') {
+        // admin can delete
+        await post.remove()
+        return res.status(200).send('Post deleted successfully')
+      } else {
+        return res.status(401).send('Unauthorized')
+      }
+    }
+
+    await post.remove()
+    return res.status(200).send('Post deleted successfully')
   } catch (error) {
     console.error(error)
     return res.status(500).send(`Server error`)
