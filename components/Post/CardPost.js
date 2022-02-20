@@ -14,8 +14,9 @@ import PostComments from './PostComments'
 import CommentInputField from './CommentInputField'
 import Link from 'next/link'
 import calculateTime from '../../utils/calculateTime'
+import { deletePost } from '../../utils/postActions'
 
-function CardPost({ post, user, setPosts, setShowTostr }) {
+function CardPost({ post, user, setPosts, setShowToastr }) {
   const [likes, setLikes] = useState(post.likes)
   const [comments, setComments] = useState(post.comments)
   const isLiked =
@@ -62,7 +63,14 @@ function CardPost({ post, user, setPosts, setShowTostr }) {
                 >
                   <Header as='h4' content='Are you sure?' />
                   <p>This action is ireversible!</p>
-                  <Button color='red' icon='trash' content='Delete' />
+                  <Button
+                    color='red'
+                    icon='trash'
+                    content='Delete'
+                    onClick={() =>
+                      deletePost(post._id, setPosts, setShowToastr)
+                    }
+                  />
                 </Popup>
               </>
             )}
