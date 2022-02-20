@@ -52,3 +52,32 @@ export const likePost = async (postId, userId, setLikes, like = true) => {
     alert(catchError(error))
   }
 }
+
+export const postComment = async (postId, user, text, setComments, setText) => {
+  try {
+    const res = await Axios.post(`/comment/${postId}`, { text })
+
+    const newComment = {
+      _id: res.data,
+      user,
+      text,
+      date: Date.now(),
+    }
+
+    setComments((prev) => [newComment, ...prev])
+
+    setText('')
+  } catch (error) {
+    alert(catchError(error))
+  }
+}
+
+export const deleteComment = async (postId, commentId, setComments) => {
+  try {
+    Axios.delete(`/${postId}/${commentId}`)
+
+    setComments((prev) => prev.filter((comment) => comment._id !== commentId))
+  } catch (error) {
+    alert(catchError(error))
+  }
+}
