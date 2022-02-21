@@ -60,4 +60,111 @@ router.get('/posts/:username', authMiddleware, async (req, res) => {
   }
 })
 
+// GET FOLLOWERS
+router.get('/followers/:userId', authMiddleware, async (req, res) => {
+  const { userId } = req.params
+  try {
+    const user = await FollowerModel.findOne({ user: userId }).populate(
+      'followers.user'
+    )
+
+    return res.json(user.followers)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
+// GET FOLLOWING
+router.get('/following/:userId', authMiddleware, async (req, res) => {
+  const { userId } = req.params
+  try {
+    const user = await FollowerModel.findOne({ user: userId }).populate(
+      'following.user'
+    )
+
+    return res.json(user.following)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
+// FOLLOW A USER
+router.post('/follow/:userToFollowId', authMiddleware, async (req, res) => {
+  const { userId } = req
+  const { userToFollowId } = req.params
+  try {
+    const user = await FollowerModel.findOne({ user: userId })
+    const userToFollow = await FollowerModel.findOne({ user: userToFollowId })
+    // console.log(userToFollow)
+
+    if (!user || !userToFollow) return res.status(404).send('User not found')
+
+    const isFollowing =
+      user.following.length > 0 &&
+      user.following.filter(
+        (following) => following.user.toString() === userToFollowId
+      ).length > 0
+
+    if (isFollowing) {
+      // already follow
+      return res.status(401).send('User already followed')
+    }
+
+    await user.following.unshift({ user: userToFollowId })
+    await user.save()
+
+    await userToFollow.followers.unshift({ user: userId })
+    await userToFollow.save()
+
+    return res.status(200).send('Success')
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
+// UNFOLLOW A USER
+router.put('/unfollow/:userToUnFollowId', authMiddleware, async (req, res) => {
+  const { userId } = req
+  const { userToUnFollowId } = req.params
+
+  try {
+    const user = await FollowerModel.findOne({ user: userId })
+    const userToUnFollow = await FollowerModel.findOne({
+      user: userToUnFollowId,
+    })
+
+    if (!user || !userToUnFollow) return res.status(404).send('User not found')
+
+    const isFollowing =
+      user.following.length > 0 &&
+      user.following.filter(
+        (following) => following.user.toString() === userToUnFollowId
+      ).length === 0
+
+    if (isFollowing) return res.status(401).send('User not followed previously')
+
+    const removeFollowing = user.following
+      .map((following) => following.user.toString())
+      .indexOf(userToUnFollowId)
+
+    await user.following.splice(removeFollowing, 1)
+    await user.save()
+
+    const removeFollower = userToUnFollow.followers
+      .map((follower) => follower.user.toString())
+      .indexOf(userId)
+
+    await userToUnFollow.followers.splice(removeFollower, 1)
+    await userToUnFollow.save()
+
+    return res.status(200).send('Success')
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server error`)
+  }
+})
+
 module.exports = router
