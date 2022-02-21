@@ -9,7 +9,7 @@ export const HeaderMessage = () => {
   return (
     <Message
       attached
-      header={signupRoute ? 'Get Started' : 'Welcome Back'}
+      header={signupRoute ? 'ลงทะเบียน' : 'ยินดีต้อนรับกลับ'}
       icon={signupRoute ? 'settings' : 'privacy'}
       content={
         signupRoute ? 'Create New Account' : 'Login with Email and Password'
@@ -36,11 +36,11 @@ export const FooterMessage = () => {
         <>
           <Message attached='bottom' warning>
             <Icon name='lock' />
-            Existing User? <Link href='/login'>Forgot Password</Link>
+            ผู้ใช้เก่า? <Link href='/login'>ลืมรหัสผ่าน</Link>
           </Message>
           <Message attached='bottom'>
             <Icon name='help' />
-            New User? <Link href='/login'>Signup Here</Link>
+            ผู้ใช้ใหม่? <Link href='/login'>ลงทะเบียน</Link>
           </Message>
         </>
       )}
