@@ -230,7 +230,7 @@ router.post('/settings/password', authMiddleware, async (req, res) => {
   }
 })
 
-// UPDATE MESSAGE POPUP SETTINGS
+// UPDATE MESSAGE POPUP SETTING
 router.post('/settings/messagePopup', authMiddleware, async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId)

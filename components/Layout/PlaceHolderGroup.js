@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Placeholder,
   Divider,
@@ -6,40 +6,37 @@ import {
   Button,
   Card,
   Container,
-  Icon
-} from "semantic-ui-react";
-import { range } from "lodash";
+  Icon,
+} from 'semantic-ui-react'
+import { range } from 'lodash'
 
 export const PlaceHolderPosts = () =>
-  range(1, 3).map(item => (
-    <>
-      <Placeholder key={item} fluid>
-        <Placeholder.Header image>
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Header>
-        <Placeholder.Paragraph>
-          <Placeholder.Line />
-          <Placeholder.Line />
-          <Placeholder.Line />
-          <Placeholder.Line />
-        </Placeholder.Paragraph>
-      </Placeholder>
-      <Divider hidden />
-    </>
-  ));
+  range(1, 3).map((item) => (
+    <Placeholder key={item} fluid>
+      <Placeholder.Header image>
+        <Placeholder.Line />
+        <Placeholder.Line />
+      </Placeholder.Header>
+      <Placeholder.Paragraph>
+        <Placeholder.Line />
+        <Placeholder.Line />
+        <Placeholder.Line />
+        <Placeholder.Line />
+      </Placeholder.Paragraph>
+    </Placeholder>
+  ))
 
 export const PlaceHolderSuggestions = () => (
   <>
     <List.Item>
-      <Card color="red">
+      <Card color='red'>
         <Placeholder>
           <Placeholder.Image square />
         </Placeholder>
         <Card.Content>
           <Placeholder>
             <Placeholder.Header>
-              <Placeholder.Line length="medium" />
+              <Placeholder.Line length='medium' />
             </Placeholder.Header>
           </Placeholder>
         </Card.Content>
@@ -48,19 +45,19 @@ export const PlaceHolderSuggestions = () => (
           <Button
             disabled
             circular
-            size="small"
-            icon="add user"
-            content="Follow"
-            color="twitter"
+            size='small'
+            icon='add user'
+            content='Follow'
+            color='twitter'
           />
         </Card.Content>
       </Card>
     </List.Item>
   </>
-);
+)
 
 export const PlaceHolderNotifications = () =>
-  range(1, 10).map(item => (
+  range(1, 10).map((item) => (
     <>
       <Placeholder key={item}>
         <Placeholder.Header image>
@@ -70,20 +67,20 @@ export const PlaceHolderNotifications = () =>
       </Placeholder>
       <Divider hidden />
     </>
-  ));
+  ))
 
 export const EndMessage = () => (
-  <Container textAlign="center">
-    <Icon name="refresh" size="large" />
+  <Container textAlign='center'>
+    <Icon name='refresh' size='large' />
     <Divider hidden />
   </Container>
-);
+)
 
 export const LikesPlaceHolder = () =>
-  range(1, 6).map(item => (
-    <Placeholder key={item} style={{ minWidth: "200px" }}>
+  range(1, 6).map((item) => (
+    <Placeholder key={item} style={{ minWidth: '200px' }}>
       <Placeholder.Header image>
-        <Placeholder.Line length="full" />
+        <Placeholder.Line length='full' />
       </Placeholder.Header>
     </Placeholder>
-  ));
+  ))
