@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import baseUrl from '../utils/baseUrl'
 import { parseCookies } from 'nookies'
-import { NoProfile } from '../components/Layout/NoData'
+import { NoProfile, NoProfilePosts } from '../components/Layout/NoData'
 import cookie from 'js-cookie'
 import { Grid } from 'semantic-ui-react'
 import ProfileMenuTabs from '../components/Profile/ProfileMenuTabs'
@@ -35,6 +35,7 @@ function ProfilePage({
   const ownAccount = profile.user._id === user._id
 
   useEffect(() => {
+    // console.log(userFollowStats)
     const getPosts = async () => {
       setLoading(true)
       try {
@@ -94,8 +95,7 @@ function ProfilePage({
 
                 {loading ? (
                   <PlaceHolderPosts />
-                ) : (
-                  posts.length > 0 &&
+                ) : posts.length > 0 ? (
                   posts.map((post) => (
                     <CardPost
                       key={post._id}
@@ -105,6 +105,8 @@ function ProfilePage({
                       setShowToastr={setShowToastr}
                     />
                   ))
+                ) : (
+                  <NoProfilePosts />
                 )}
               </>
             )}
