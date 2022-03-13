@@ -1,16 +1,19 @@
+import { Grid } from 'semantic-ui-react'
+import { parseCookies } from 'nookies'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import baseUrl from '../utils/baseUrl'
-import { parseCookies } from 'nookies'
-import { NoProfile, NoProfilePosts } from '../components/Layout/NoData'
 import cookie from 'js-cookie'
-import { Grid } from 'semantic-ui-react'
-import ProfileMenuTabs from '../components/Profile/ProfileMenuTabs'
-import ProfileHeader from '../components/Profile/ProfileHeader'
+
+import { NoProfile, NoProfilePosts } from '../components/Layout/NoData'
 import { PlaceHolderPosts } from '../components/Layout/PlaceHolderGroup'
-import CardPost from '../components/Post/CardPost'
 import { PostDeleteToastr } from '../components/Layout/Toastr'
+import baseUrl from '../utils/baseUrl'
+import CardPost from '../components/Post/CardPost'
+import ProfileHeader from '../components/Profile/ProfileHeader'
+import ProfileMenuTabs from '../components/Profile/ProfileMenuTabs'
+import Followers from '../components/Profile/Followers'
+import Following from '../components/Profile/Following'
 
 function ProfilePage({
   profile,
@@ -58,7 +61,7 @@ function ProfilePage({
     }
 
     getPosts()
-  }, [])
+  }, [router.query.username])
 
   useEffect(() => {
     showToastr && setTimeout(() => setShowToastr(false), 3000)
@@ -109,6 +112,24 @@ function ProfilePage({
                   <NoProfilePosts />
                 )}
               </>
+            )}
+
+            {activeItem === 'followers' && (
+              <Followers
+                user={user}
+                loggedUserFollowStats={loggedUserFollowStats}
+                setUserFollowStats={setLoggedUserFollowStats}
+                profileUserId={profile.user._id}
+              />
+            )}
+
+            {activeItem === 'following' && (
+              <Following
+                user={user}
+                loggedUserFollowStats={loggedUserFollowStats}
+                setUserFollowStats={setLoggedUserFollowStats}
+                profileUserId={profile.user._id}
+              />
             )}
           </Grid.Column>
         </Grid.Row>

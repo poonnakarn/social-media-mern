@@ -24,14 +24,14 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', async (req, res) => {
   // has req.body.user
 
-  console.log(req.body)
-  const { email, password } = req.body.user
-
-  if (!isEmail(email)) return res.status(401).send('Invalid email')
-  if (password.length < 6)
-    return res.status(401).send('Password must be at least 6 characters')
-
   try {
+    console.log(req.body)
+    const { email, password } = req.body.user
+
+    if (!isEmail(email)) return res.status(401).send('Invalid email')
+    if (password.length < 6)
+      return res.status(401).send('Password must be at least 6 characters')
+
     const user = await UserModel.findOne({ email: email.toLowerCase() }).select(
       '+password'
     )
