@@ -14,6 +14,7 @@ import ProfileHeader from '../components/Profile/ProfileHeader'
 import ProfileMenuTabs from '../components/Profile/ProfileMenuTabs'
 import Followers from '../components/Profile/Followers'
 import Following from '../components/Profile/Following'
+import UpdateProfile from '../components/Profile/UpdateProfile'
 
 function ProfilePage({
   profile,
@@ -130,6 +131,10 @@ function ProfilePage({
                 setUserFollowStats={setLoggedUserFollowStats}
                 profileUserId={profile.user._id}
               />
+            )}
+
+            {activeItem === 'updateProfile' && (
+              <UpdateProfile Profile={profile} />
             )}
           </Grid.Column>
         </Grid.Row>
