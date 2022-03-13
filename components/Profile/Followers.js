@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Button, Image, List } from 'semantic-ui-react'
-import Spinner from '../Layout/Spinner'
 import axios from 'axios'
-import baseUrl from '../../utils/baseUrl'
 import cookies from 'js-cookie'
 
+import Spinner from '../Layout/Spinner'
+import baseUrl from '../../utils/baseUrl'
 import { NoFollowData } from '../Layout/NoData'
+import { followUser, unFollowUser } from '../../utils/profileActions'
 
 function Followers({
   user,
@@ -65,6 +66,20 @@ function Followers({
                         content={isFollowing ? 'Following' : 'Follow'}
                         icon={isFollowing ? 'check' : 'add user'}
                         disabled={followLoading}
+                        onClick={async () => {
+                          setFollowLoading(true)
+                          isFollowing
+                            ? await unFollowUser(
+                                profileFollower.user._id,
+                                setUserFollowStats
+                              )
+                            : await followUser(
+                                profileFollower.user._id,
+                                setUserFollowStats
+                              )
+
+                          setFollowLoading(false)
+                        }}
                       />
                     )}
                   </List.Content>

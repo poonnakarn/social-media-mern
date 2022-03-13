@@ -6,6 +6,7 @@ import baseUrl from '../../utils/baseUrl'
 import cookies from 'js-cookie'
 
 import { NoFollowData } from '../Layout/NoData'
+import { followUser, unFollowUser } from '../../utils/profileActions'
 
 function Following({
   user,
@@ -65,6 +66,20 @@ function Following({
                         content={isFollowing ? 'Following' : 'Follow'}
                         icon={isFollowing ? 'check' : 'add user'}
                         disabled={followLoading}
+                        onClick={async () => {
+                          setFollowLoading(true)
+                          isFollowing
+                            ? await unFollowUser(
+                                profileFollowing.user._id,
+                                setUserFollowStats
+                              )
+                            : await followUser(
+                                profileFollowing.user._id,
+                                setUserFollowStats
+                              )
+
+                          setFollowLoading(false)
+                        }}
                       />
                     )}
                   </List.Content>
@@ -81,7 +96,7 @@ function Following({
           )
         })
       ) : (
-        <NoFollowData followeingComponent={true} />
+        <NoFollowData followingComponent={true} />
       )}
     </>
   )
