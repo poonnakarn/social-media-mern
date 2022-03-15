@@ -8,6 +8,8 @@ import {
   Checkbox,
 } from 'semantic-ui-react'
 
+import { passwordUpdate, toggleMessagePopup } from '../../utils/profileActions'
+
 function Settings({ newMessagePopup }) {
   const [showUpdatePassword, setShowUpdatePassword] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -70,7 +72,13 @@ function Settings({ newMessagePopup }) {
             <div style={{ marginTop: '10px' }}>
               Control whether a Popup should appear when there is a new Message?
               <br />
-              <Checkbox checked={popupSetting} toggle onChange={() => {}} />
+              <Checkbox
+                checked={popupSetting}
+                toggle
+                onChange={() =>
+                  toggleMessagePopup(popupSetting, setPopupSetting, setSuccess)
+                }
+              />
             </div>
           )}
         </List.Item>
@@ -112,7 +120,14 @@ const UpdatePassword = ({ setSuccess, setShowUpdatePassword }) => {
       <Form
         error={errorMsg != null}
         loading={loading}
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setLoading(true)
+          await passwordUpdate(setSuccess, userPasswords)
+          setLoading(false)
+
+          setShowUpdatePassword(false)
+        }}
       >
         <List.List>
           <List.Item>

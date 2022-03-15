@@ -5,6 +5,7 @@ const UserModel = require('../models/UserModel')
 const FollowerModel = require('../models/FollowerModel')
 const ProfileModel = require('../models/ProfileModel')
 const PostModel = require('../models/PostModel')
+const bcrypt = require('bcryptjs')
 
 // GET PROFILE INFO
 router.get('/:username', authMiddleware, async (req, res) => {
