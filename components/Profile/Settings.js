@@ -8,13 +8,24 @@ import {
   Checkbox,
 } from 'semantic-ui-react'
 
-function Settings() {
+function Settings({ newMessagePopup }) {
   const [showUpdatePassword, setShowUpdatePassword] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  const [showMessageSettings, setShowMessageSettings] = useState(false)
+  const [popupSetting, setPopupSetting] = useState(newMessagePopup)
+
+  const isFirstRun = useRef(true)
 
   useEffect(() => {
     success && setTimeout(() => setSuccess(false), 3000)
   }, [success])
+
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false
+    }
+  }, [popupSetting])
 
   return (
     <>
@@ -39,6 +50,28 @@ function Settings() {
               setSuccess={setSuccess}
               setShowUpdatePassword={setShowUpdatePassword}
             />
+          )}
+        </List.Item>
+        <Divider />
+        <List.Item>
+          <List.Icon
+            name='paper plane outline'
+            size='large'
+            verticalAlign='middle'
+          />
+          <List.Content>
+            <List.Header
+              onClick={() => setShowMessageSettings(!showMessageSettings)}
+              as='a'
+              content='Show New Message Popup?'
+            />
+          </List.Content>
+          {showMessageSettings && (
+            <div style={{ marginTop: '10px' }}>
+              Control whether a Popup should appear when there is a new Message?
+              <br />
+              <Checkbox checked={popupSetting} toggle onChange={() => {}} />
+            </div>
           )}
         </List.Item>
       </List>
