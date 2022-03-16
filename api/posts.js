@@ -32,34 +32,93 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 })
 
-// GET ALL POSTS
+// @desc    Get all posts from the followed user for news feed
+// @route   GET /api/posts/
+// @access  Private
 router.get('/', authMiddleware, async (req, res) => {
   const { pageNumber } = req.query
-
-  const number = Number(pageNumber)
-  const size = 8
-
   try {
-    let posts
+    const { userId } = req
+    const number = Number(pageNumber)
+    const size = 8
+
+    const loggedUser = await FollowerModel.findOne({ user: userId }).select(
+      '-followers'
+    )
+
+    let posts = []
 
     if (number === 1) {
-      posts = await PostModel.find()
-        .limit(size)
-        .sort({ createdAt: -1 })
-        .populate('user')
-        .populate('comments.user')
+      if (loggedUser.following.length > 0) {
+        // User is following anyone
+        posts = await PostModel.find({
+          user: {
+            $in: [
+              userId, // own posts
+              ...loggedUser.following.map((following) => following.user), // user who we follow posts
+            ],
+          },
+        })
+          .limit(size)
+          .sort({ createdAt: -1 })
+          .populate('user')
+          .populate('comments.user')
+      } else {
+        posts = await PostModel.find({ user: userId })
+          .limit(size)
+          .sort({ createdAt: -1 })
+          .populate('user')
+          .populate('comments.user') // only own post because not following anyone
+      }
     } else {
-      // skip post
+      // Page more than 1
       const skips = size * (number - 1)
-      posts = await PostModel.find()
-        .skip(skips)
-        .limit(size)
-        .sort({ createdAt: -1 })
-        .populate('user')
-        .populate('comments.user')
+      if (loggedUser.following.length > 0) {
+        // following some users
+        posts = await PostModel.find({
+          user: {
+            $in: [
+              userId, // own posts
+              ...loggedUser.following.map((following) => following.user), // user who we follow posts
+            ],
+          },
+        })
+          .skip(skips)
+          .limit(size)
+          .sort({ createdAt: -1 })
+          .populate('user')
+          .populate('comments.user')
+      } else {
+        posts = await PostModel.find({ user: userId })
+          .skip(skips)
+          .limit(size)
+          .sort({ createdAt: -1 })
+          .populate('user')
+          .populate('comments.user') // only own post because not following anyone
+      }
     }
 
     return res.json(posts)
+    // let posts
+
+    // if (number === 1) {
+    //   posts = await PostModel.find()
+    //     .limit(size)
+    //     .sort({ createdAt: -1 })
+    //     .populate('user')
+    //     .populate('comments.user')
+    // } else {
+    //   // skip post
+    //   const skips = size * (number - 1)
+    //   posts = await PostModel.find()
+    //     .skip(skips)
+    //     .limit(size)
+    //     .sort({ createdAt: -1 })
+    //     .populate('user')
+    //     .populate('comments.user')
+    // }
+
+    // return res.json(posts)
   } catch (error) {
     console.error(error)
     return res.status(500).send(`Server error`)
