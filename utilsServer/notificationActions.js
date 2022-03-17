@@ -118,26 +118,65 @@ const removeCommentNotification = async (
   userToNotifyId
 ) => {
   try {
+    await NotificationModel.findOneAndUpdate(
+      { user: userToNotifyId },
+      {
+        $pull: {
+          notifications: {
+            type: 'newComment',
+            user: userId,
+            post: postId,
+            commentId: commentId,
+          },
+        },
+      }
+    )
+
+    return
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const newFollowerNotification = async (userId, userToNotifyId) => {
+  try {
+    const user = await NotificationModel.findOne({ user: userToNotifyId })
+
+    const newNotification = {
+      type: 'newFollower',
+      user: userId,
+      date: Date.now(),
+    }
+
+    user.notifications.unshift(newNotification)
+
+    await user.save()
+
+    return
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const removeFollowerNotification = async (userId, userToNotifyId) => {
+  try {
     const user = await NotificationModel.findOne({ user: userToNotifyId })
 
     const notificationToRemove = await user.notifications.find(
       (notification) =>
-        notification.type === 'newComment' &&
-        notification.user.toString() === userId &&
-        notification.post.toString() === postId &&
-        notification.commentId === commentId
+        notification.type === 'newFollower' &&
+        notification.user.toString() === userId
     )
 
-    const indexOf = await user.notifications
+    const indexOf = await user.notification
       .map((notification) => notification._id.toString())
       .indexOf(notificationToRemove._id.toString())
 
-    await user.notifications.splice(indexOf, 1)
+    await user.notification.splice(indexOf, 1)
 
     await user.save()
-    return
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -146,4 +185,6 @@ module.exports = {
   removeLikeNotification,
   newCommentNotification,
   removeCommentNotification,
+  newFollowerNotification,
+  removeFollowerNotification,
 }

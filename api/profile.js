@@ -6,6 +6,11 @@ const FollowerModel = require('../models/FollowerModel')
 const ProfileModel = require('../models/ProfileModel')
 const PostModel = require('../models/PostModel')
 const bcrypt = require('bcryptjs')
+const {
+  newCommentNotification,
+  removeFollowerNotification,
+  newFollowerNotification,
+} = require('../utilsServer/notificationActions')
 
 // GET PROFILE INFO
 router.get('/:username', authMiddleware, async (req, res) => {
@@ -119,6 +124,8 @@ router.post('/follow/:userToFollowId', authMiddleware, async (req, res) => {
     await userToFollow.followers.unshift({ user: userId })
     await userToFollow.save()
 
+    await newFollowerNotification(userId, userToFollowId)
+
     return res.status(200).send('Success')
   } catch (error) {
     console.error(error)
@@ -160,6 +167,8 @@ router.put('/unfollow/:userToUnFollowId', authMiddleware, async (req, res) => {
 
     await userToUnFollow.followers.splice(removeFollower, 1)
     await userToUnFollow.save()
+
+    await removeFollowerNotification(userId, userToUnFollowId)
 
     return res.status(200).send('Success')
   } catch (error) {
