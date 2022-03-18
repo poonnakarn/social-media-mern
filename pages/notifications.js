@@ -44,6 +44,7 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
                   overflow: 'auto',
                   height: '40rem',
                   position: 'relative',
+                  width: '100%',
                 }}
               >
                 <Feed size='small'>
@@ -53,7 +54,6 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
                         notification.post != null && (
                           <LikeNotification
                             key={notification._id}
-                            user={user}
                             notification={notification}
                           />
                         )}
@@ -72,7 +72,7 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
                           key={notification._id}
                           notification={notification}
                           loggedUserFollowStats={loggedUserFollowStats}
-                          setUserFollowStats={setUserFollowStats}
+                          setUserFollowStats={setLoggedUserFollowStats}
                         />
                       )}
                     </>

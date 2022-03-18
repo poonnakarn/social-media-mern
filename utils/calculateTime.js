@@ -2,24 +2,25 @@ import moment from 'moment'
 import Moment from 'react-moment'
 
 const calculateTime = (createdAt) => {
-  const today = moment(Date.now())
-  const postDate = moment(createdAt)
+  const TODAY = moment(Date.now()).startOf('day')
+  const YESTERDAY = moment(Date.now()).subtract(1, 'days').startOf('day')
+  const postDate = moment(createdAt).startOf('day')
 
-  const diffInHours = today.diff(postDate, 'hours')
+  // const diffInHours = TODAY.diff(postDate, 'days')
 
-  if (diffInHours < 24) {
+  if (postDate.isSame(TODAY, 'd')) {
     return (
       <>
         Today <Moment format='hh:mm A'>{createdAt}</Moment>
       </>
     )
-  } else if (diffInHours > 24 && diffInHours < 36) {
+  } else if (postDate.isSame(YESTERDAY, 'd')) {
     return (
       <>
         Yesterday <Moment format='hh:mm A'>{createdAt}</Moment>
       </>
     )
-  } else if (diffInHours > 36) {
+  } else {
     return <Moment format='DD/MM/YYYY hh:mm A'>{createdAt}</Moment>
   }
 }
