@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import baseUrl from '../utils/baseUrl'
 import { parseCookies } from 'nookies'
@@ -31,7 +31,6 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
     }
   }, [])
 
-  console.log(notifications)
   return (
     <>
       <Container style={{ marginTop: '1.5rem' }}>
@@ -49,7 +48,7 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
               >
                 <Feed size='small'>
                   {notifications.map((notification) => (
-                    <>
+                    <React.Fragment key={`${notification._id}_fragment`}>
                       {notification.type === 'newLike' &&
                         notification.post != null && (
                           <LikeNotification
@@ -62,7 +61,6 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
                         notification.post != null && (
                           <CommentNotification
                             key={notification._id}
-                            user={user}
                             notification={notification}
                           />
                         )}
@@ -75,7 +73,7 @@ function Notifications({ notifications, errorLoading, user, userFollowStats }) {
                           setUserFollowStats={setLoggedUserFollowStats}
                         />
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </Feed>
               </div>

@@ -6,7 +6,9 @@ function LikeNotification({ notification }) {
   return (
     <>
       <Feed.Event>
-        <Feed.Label image={notification.user.profilePicUrl} />
+        <Feed.Label>
+          <img src={notification.user.profilePicUrl} />
+        </Feed.Label>
         <Feed.Content>
           <Feed.Summary>
             <>
@@ -27,6 +29,7 @@ function LikeNotification({ notification }) {
           )}
         </Feed.Content>
       </Feed.Event>
+
       <br />
     </>
   )
