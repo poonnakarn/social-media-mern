@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Form, Button, Message, Segment, Divider } from 'semantic-ui-react'
-import CommonInput from '../components/Common/CommonInput'
+import CommonInputs from '../components/Common/CommonInputs'
 import ImageDropDiv from '../components/Common/ImageDropDiv'
 import {
   HeaderMessage,
@@ -199,7 +199,7 @@ function Signup() {
             iconPosition='left'
           />
 
-          <CommonInput
+          <CommonInputs
             user={user}
             showSocialLinks={showSocialLinks}
             setShowSocialLinks={setShowSocialLinks}

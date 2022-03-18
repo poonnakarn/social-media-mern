@@ -21,7 +21,8 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
   const protectedRoutes =
     ctx.pathname === '/' ||
     ctx.pathname === '/[username]' ||
-    ctx.pathname === '/post/[postId]'
+    ctx.pathname === '/post/[postId]' ||
+    ctx.pathname === '/notifications'
 
   // not logged in
   if (!token) {

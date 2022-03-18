@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const NotificationSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  notification: [
+  notifications: [
     {
       type: { type: String, enum: ['newLike', 'newComment', 'newFollower'] },
 
