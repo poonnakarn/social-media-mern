@@ -18,15 +18,22 @@ app.use(express.urlencoded({ extended: false }))
 connectDb()
 
 io.on('connection', (socket) => {
-  socket.on('join', ({ userId }) => {
+  socket.on('join', async ({ userId }) => {
     const users = await addUser(userId, socket.id)
+
+    console.log(users)
+
+    setInterval(() => {
+      socket.emit('connectedUsers', {
+        users: users.filter((user) => user.userId !== userId),
+      })
+    }, 5000)
   })
 
-  setInterval(() => {
-    socket.emit('connectedUsers', {
-      users: users.filter((user) => user.userId !== userId),
-    })
-  }, 10000)
+  socket.on('disconnect', async () => {
+    await removeUser(socket.id)
+    console.log('User disconnected')
+  })
 })
 
 nextApp.prepare().then(() => {

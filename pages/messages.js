@@ -32,15 +32,23 @@ function Messages({ chatsData, errorLoading, user }) {
     if (socket.current) {
       socket.current.emit('join', { userId: user._id })
 
-      socket.current.on('connectedUsers', ({ users }) => {})
-
-      users.length > 0 && setConnectedUsers(users)
+      socket.current.on('connectedUsers', ({ users }) => {
+        users.length > 0 && setConnectedUsers(users)
+      })
     }
 
     if (chats.length > 0 && !router.query.message)
       router.push(`/messages?message=${chats[0].messagesWith}`, undefined, {
         shallow: true,
       })
+
+    // Clean up function
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect()
+        socket.current.off()
+      }
+    }
   }, [])
 
   return (
@@ -66,7 +74,12 @@ function Messages({ chatsData, errorLoading, user }) {
                   style={{ overflow: 'auto', maxHeight: '32rem' }}
                 >
                   {chats.map((chat, i) => (
-                    <Chat key={i} chat={chat} setChats={setChats} />
+                    <Chat
+                      connectedUsers={connectedUsers}
+                      key={i}
+                      chat={chat}
+                      setChats={setChats}
+                    />
                   ))}
                 </Segment>
               </Comment.Group>

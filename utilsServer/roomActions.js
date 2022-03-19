@@ -14,7 +14,7 @@ const addUser = async (userId, socketId) => {
 
     const newUser = { userId, socketId }
 
-    user.push(newUser)
+    users.push(newUser)
 
     return users
   }
@@ -25,7 +25,7 @@ const removeUser = async (socketId) => {
     .map((user) => user.socketId === socketId)
     .indexOf(socketId)
 
-  user.splice(indexOf, 1)
+  users.splice(indexOf, 1)
 
   return
 }
