@@ -19,7 +19,7 @@ router.get('/', authMiddleware, async (req, res) => {
         messagesWith: chat.messagesWith._id,
         name: chat.messagesWith.name,
         profilePicUrl: chat.messagesWith.profilePicUrl,
-        lastMessage: chat.messages[chat.messages.length - 1],
+        lastMessage: chat.messages[chat.messages.length - 1].msg,
         date: chat.messages[chat.messages.length - 1].date,
       }))
     }
