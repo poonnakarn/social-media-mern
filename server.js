@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
+const { Server } = require('socket.io')
+const io = new Server(server)
 const next = require('next')
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
@@ -13,6 +15,15 @@ app.use(express.json()) // this is the body parser
 app.use(express.urlencoded({ extended: false }))
 
 connectDb()
+
+io.on('connection', (socket) => {
+  console.log('a user connected')
+  socket.on('helloWorld', ({ name, age }) => {
+    console.log({ name, age })
+
+    socket.emit('dataReceived', { msg: `Hello ${name}, data received` })
+  })
+})
 
 nextApp.prepare().then(() => {
   // use api
