@@ -20,6 +20,7 @@ import { NoMessages } from '../components/Layout/NoData'
 function Messages({ chatsData, errorLoading, user }) {
   const [chats, setChats] = useState(chatsData)
   const router = useRouter()
+  const [connectedUsers, setConnectedUsers] = useState([])
 
   const socket = useRef()
 
@@ -29,14 +30,11 @@ function Messages({ chatsData, errorLoading, user }) {
     }
 
     if (socket.current) {
-      socket.current.emit('helloWorld', {
-        name: 'John Doe',
-        age: '22',
-      })
+      socket.current.emit('join', { userId: user._id })
 
-      socket.current.on('dataReceived', ({ msg }) => {
-        console.log(msg)
-      })
+      socket.current.on('connectedUsers', ({ users }) => {})
+
+      users.length > 0 && setConnectedUsers(users)
     }
 
     if (chats.length > 0 && !router.query.message)

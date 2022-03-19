@@ -10,6 +10,7 @@ const handle = nextApp.getRequestHandler()
 require('dotenv').config({ path: './config.env' })
 const connectDb = require('./utilsServer/connectDb')
 const PORT = process.env.PORT || 3000
+const { addUser, removeUser } = require('./utilsServer/roomActions')
 
 app.use(express.json()) // this is the body parser
 app.use(express.urlencoded({ extended: false }))
@@ -17,12 +18,15 @@ app.use(express.urlencoded({ extended: false }))
 connectDb()
 
 io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.on('helloWorld', ({ name, age }) => {
-    console.log({ name, age })
-
-    socket.emit('dataReceived', { msg: `Hello ${name}, data received` })
+  socket.on('join', ({ userId }) => {
+    const users = await addUser(userId, socket.id)
   })
+
+  setInterval(() => {
+    socket.emit('connectedUsers', {
+      users: users.filter((user) => user.userId !== userId),
+    })
+  }, 10000)
 })
 
 nextApp.prepare().then(() => {
