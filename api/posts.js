@@ -266,6 +266,8 @@ router.post('/comment/:postId', authMiddleware, async (req, res) => {
 
     if (!post) return res.status(404).send('Post not found')
 
+    console.log(userId)
+
     // id, user, text, date
     const newComment = {
       _id: uuid(),
@@ -303,7 +305,9 @@ router.delete('/:postId/:commentId', authMiddleware, async (req, res) => {
     const post = await PostModel.findById(postId)
     if (!post) return res.status(404).send('Post not found')
 
-    const comment = post.comments.find((comment) => comment._id === commentId)
+    const comment = await post.comments.find(
+      (comment) => comment._id === commentId
+    )
     if (!comment) return res.status(404).send('Comment not found')
 
     const user = await UserModel.findById(userId)
@@ -313,7 +317,7 @@ router.delete('/:postId/:commentId', authMiddleware, async (req, res) => {
         .map((comment) => comment._id)
         .indexOf(commentId)
 
-      await post.comments.splice(index, 1)
+      post.comments.splice(index, 1)
       await post.save()
 
       if (post.user.toString() !== userId) {
