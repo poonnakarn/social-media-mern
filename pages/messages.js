@@ -16,6 +16,9 @@ import baseUrl from '../utils/baseUrl'
 import Chat from '../components/Chats/Chat'
 import ChatListSearch from '../components/Chats/ChatListSearch'
 import { NoMessages } from '../components/Layout/NoData'
+import Message from '../components/Messages/Message'
+import MessageInputField from '../components/Messages/MessageInputField'
+import Banner from '../components/Messages/Banner'
 
 function Messages({ chatsData, errorLoading, user }) {
   const [chats, setChats] = useState(chatsData)
@@ -113,6 +116,45 @@ function Messages({ chatsData, errorLoading, user }) {
                   ))}
                 </Segment>
               </Comment.Group>
+            </Grid.Column>
+            <Grid.Column width={12}>
+              {router.query.message && (
+                <>
+                  <div
+                    style={{
+                      overflow: 'auto',
+                      overflowX: 'hidden',
+                      maxHeight: '35rem',
+                      height: '35rem',
+                      backgroundColor: 'whitesmoke',
+                    }}
+                  >
+                    <>
+                      {messages.length > 0 && (
+                        <>
+                          <div style={{ position: 'sticky', top: '0' }}>
+                            <Banner bannerData={bannerData} />
+                          </div>
+                          {messages.map((message, i) => (
+                            <Message
+                              key={i}
+                              message={message}
+                              user={user}
+                              setMessages={setMessages}
+                              messagesWith={openChatId.current}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  </div>
+                  <MessageInputField
+                    socket={socket.current}
+                    user={user}
+                    messagesWith={openChatId.current}
+                  />
+                </>
+              )}
             </Grid.Column>
           </Grid>
         </>
