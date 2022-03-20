@@ -21,8 +21,13 @@ function Messages({ chatsData, errorLoading, user }) {
   const [chats, setChats] = useState(chatsData)
   const router = useRouter()
   const [connectedUsers, setConnectedUsers] = useState([])
-
   const socket = useRef()
+
+  const [messages, setMessages] = useState([])
+  const [bannerData, setBannerData] = useState({ name: '', profilePicUrl: '' })
+
+  // This ref is for persisting the state of query string in url through re-renders
+  const openChatId = useRef('')
 
   useEffect(() => {
     if (!socket.current) {
@@ -50,6 +55,31 @@ function Messages({ chatsData, errorLoading, user }) {
       }
     }
   }, [])
+
+  useEffect(() => {
+    const loadMessages = () => {
+      socket.current.emit('loadMessages', {
+        userId: user._id,
+        messagesWith: router.query.message,
+      })
+
+      socket.current.on('messagesLoaded', ({ chat }) => {
+        // console.log(chat)
+
+        setMessages(chat.messages)
+        setBannerData({
+          name: chat.messagesWith.name,
+          profilePicUrl: chat.messagesWith.profilePicUrl,
+        })
+
+        openChatId.current = chat.messagesWith._id
+      })
+    }
+
+    if (socket.current) {
+      loadMessages()
+    }
+  }, [router.query.message])
 
   return (
     <Segment padded basic size='large' style={{ marginTop: '5px' }}>
