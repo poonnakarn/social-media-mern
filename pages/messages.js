@@ -137,6 +137,7 @@ function Messages({ chatsData, errorLoading, user }) {
                           </div>
                           {messages.map((message, i) => (
                             <Message
+                              bannerProfilePic={bannerData.profilePicUrl}
                               key={i}
                               message={message}
                               user={user}
