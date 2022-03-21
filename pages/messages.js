@@ -84,6 +84,39 @@ function Messages({ chatsData, errorLoading, user }) {
     }
   }, [router.query.message])
 
+  // SENDING MESSAGES
+  const sendMsg = (msg) => {
+    if (socket.current) {
+      console.log(openChatId.current)
+      socket.current.emit('sendNewMsg', {
+        userId: user._id,
+        msgSendToUserId: openChatId.current,
+        msg,
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('msgSent', ({ newMsg }) => {
+        if (newMsg.receiver === openChatId.current) {
+          setMessages((prev) => [...prev, newMsg])
+        }
+
+        setChats((prev) => {
+          const previousChat = prev.find(
+            (chat) => chat.messagesWith === newMsg.receiver
+          )
+
+          previousChat.lastMessage = newMsg.msg
+          previousChat.date = newMsg.date
+
+          return [...prev]
+        })
+      })
+    }
+  }, [])
+
   return (
     <Segment padded basic size='large' style={{ marginTop: '5px' }}>
       <Header
@@ -149,11 +182,7 @@ function Messages({ chatsData, errorLoading, user }) {
                       )}
                     </>
                   </div>
-                  <MessageInputField
-                    socket={socket.current}
-                    user={user}
-                    messagesWith={openChatId.current}
-                  />
+                  <MessageInputField sendMsg={sendMsg} />
                 </>
               )}
             </Grid.Column>

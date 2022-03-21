@@ -11,7 +11,7 @@ require('dotenv').config({ path: './config.env' })
 const connectDb = require('./utilsServer/connectDb')
 const PORT = process.env.PORT || 3000
 const { addUser, removeUser } = require('./utilsServer/roomActions')
-const { loadMessages } = require('./utilsServer/messagesAction')
+const { loadMessages, sendMsg } = require('./utilsServer/messagesAction')
 
 app.use(express.json()) // this is the body parser
 app.use(express.urlencoded({ extended: false }))
@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
   socket.on('join', async ({ userId }) => {
     const users = await addUser(userId, socket.id)
 
-    console.log(users)
+    // console.log(users)
 
     setInterval(() => {
       socket.emit('connectedUsers', {
@@ -36,6 +36,14 @@ io.on('connection', (socket) => {
 
     if (!error) {
       socket.emit('messagesLoaded', { chat })
+    }
+  })
+
+  socket.on('sendNewMsg', async ({ userId, msgSendToUserId, msg }) => {
+    const { newMsg, error } = await sendMsg(userId, msgSendToUserId, msg)
+
+    if (!error) {
+      socket.emit('msgSent', { newMsg })
     }
   })
 
