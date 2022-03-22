@@ -19,6 +19,7 @@ import { NoMessages } from '../components/Layout/NoData'
 import Message from '../components/Messages/Message'
 import MessageInputField from '../components/Messages/MessageInputField'
 import Banner from '../components/Messages/Banner'
+import getUserInfo from '../utils/getUserInfo'
 
 function Messages({ chatsData, errorLoading, user }) {
   const [chats, setChats] = useState(chatsData)
@@ -59,6 +60,7 @@ function Messages({ chatsData, errorLoading, user }) {
     }
   }, [])
 
+  // LOAD MESSAGES
   useEffect(() => {
     const loadMessages = () => {
       socket.current.emit('loadMessages', {
@@ -77,9 +79,17 @@ function Messages({ chatsData, errorLoading, user }) {
 
         openChatId.current = chat.messagesWith._id
       })
+
+      socket.current.on('noChatFound', async () => {
+        const { name, profilePicUrl } = await getUserInfo(router.query.message)
+
+        setBannerData({ name, profilePicUrl })
+        setMessages([])
+        openChatId.current = router.query.message
+      })
     }
 
-    if (socket.current) {
+    if (socket.current && router.query.message) {
       loadMessages()
     }
   }, [router.query.message])
@@ -163,11 +173,11 @@ function Messages({ chatsData, errorLoading, user }) {
                     }}
                   >
                     <>
+                      <div style={{ position: 'sticky', top: '0' }}>
+                        <Banner bannerData={bannerData} />
+                      </div>
                       {messages.length > 0 && (
                         <>
-                          <div style={{ position: 'sticky', top: '0' }}>
-                            <Banner bannerData={bannerData} />
-                          </div>
                           {messages.map((message, i) => (
                             <Message
                               bannerProfilePic={bannerData.profilePicUrl}

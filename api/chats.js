@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const ChatModel = require('../models/ChatModel')
 const authMiddleware = require('../middleware/authMiddleware')
+const UserModel = require('../models/UserModel')
 
 // GET ALL CHATS
 router.get('/', authMiddleware, async (req, res) => {
@@ -25,6 +26,22 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 
     return res.json(chatsToBeSent)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).send(`Server Error`)
+  }
+})
+
+// GET USER INFO
+router.get('/user/:userToFindId', authMiddleware, async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userToFindId)
+
+    if (!user) {
+      return res.status(404).send('No User Found')
+    }
+
+    return res.json({ name: user.name, profilePicUrl: user.profilePicUrl })
   } catch (error) {
     console.error(error)
     return res.status(500).send(`Server Error`)
