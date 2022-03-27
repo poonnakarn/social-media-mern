@@ -15,4 +15,4 @@ const getUserInfo = async (userToFindId) => {
 }
 
 export default getUserInfo
-// rest day 3
+// rest day 4
