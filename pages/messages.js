@@ -207,7 +207,6 @@ function Messages({ chatsData, errorLoading, user }) {
 
 Messages.getInitialProps = async (ctx) => {
   try {
-    // Get token
     const { token } = parseCookies(ctx)
 
     const res = await axios.get(`${baseUrl}/api/chats`, {
