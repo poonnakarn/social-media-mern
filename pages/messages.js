@@ -222,5 +222,3 @@ Messages.getInitialProps = async (ctx) => {
 }
 
 export default Messages
-
-// rest
